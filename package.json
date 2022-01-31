@@ -4,7 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "live-server": "^1.2.1",
     "prettier": "^2.5.1",
     "ts-loader": "^9.2.6",
     "tsc": "^2.0.4",
