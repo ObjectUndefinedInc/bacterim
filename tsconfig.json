@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "outDir": "./build/",
+    "rootDir": "src",
+    "inlineSourceMap": true,
+    "target": "es6",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitThis": true
+  },
+  "include": ["./src/js/**/*"],
+  "exclude": ["node_modules"]
+}
