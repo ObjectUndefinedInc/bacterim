@@ -16,5 +16,8 @@
     "webpack": "webpack --config webpack.config.js",
     "start": "yarn build && npx live-server ./build",
     "copy-html": "cp ./src/*.html ./build/"
+  },
+  "dependencies": {
+    "nanoid": "^3.2.0"
   }
 }
