@@ -51,7 +51,7 @@ export class GameMap {
 
   // Private
   private decodeCoordinates(coords: string): Coordinates {
-    const [x, y] = coords.split('')?.map(c => (c ? +c : undefined))
+    const [x, y] = coords.split('-').map(c => (c ? +c : null))
     if (
       !(x && x >= 0 && x <= this.#width && y && y >= 0 && y <= this.#height)
     ) {
@@ -61,6 +61,11 @@ export class GameMap {
   }
 
   private encodeCoordinates({ x, y }: Coordinates): string {
+    if (
+      !(x && x >= 0 && x <= this.#width && y && y >= 0 && y <= this.#height)
+    ) {
+      throw new Error('Coordinates encoding error')
+    }
     return `${x}-${y}`
   }
   //
@@ -137,5 +142,3 @@ export class GameMap {
     return true
   }
 }
-
-const map = new GameMap({ width: 100, height: 100 })
