@@ -1,59 +1,72 @@
-import { Coordinates, GameObject, Size } from './types'
+import { getRandomInt } from '../utils'
+import { GameObject } from './object'
+import { Coordinates, Size } from './types'
 
 const MIN_WIDTH = 32
 const MIN_HEIGHT = 32
 
 export class GameMap {
-  // Fields
-  #width: number
-  #height: number
+  private _width: number
+  private _height: number
 
-  #map = new Map<string, GameObject | null>()
-  #indeces = new Map<string, string>()
+  private _objectsByCoords = new Map<string, GameObject | null>()
+  private _coordsById = new Map<string, string>()
 
   constructor({ width, height }: Size) {
     if (!(width >= MIN_WIDTH && height >= MIN_HEIGHT)) {
       throw new Error('Map init error')
     }
-    this.#width = width
-    this.#height = height
+    this._width = width
+    this._height = height
 
-    for (let x = 0; x <= this.#width; x++) {
-      for (let y = 0; y <= this.#height; y++) {
+    for (let x = 0; x <= this._width; x++) {
+      for (let y = 0; y <= this._height; y++) {
         const coords = this.encodeCoordinates({ x, y })
-        this.#map.set(coords, null)
+        this._objectsByCoords.set(coords, null)
       }
     }
   }
-  //
 
-  // Setters and getters
-  get size(): Readonly<Size> {
+  /*
+
+  */
+
+  public get size(): Readonly<Size> {
     return {
-      width: this.#width,
-      height: this.#height,
+      width: this._width,
+      height: this._height,
     }
   }
 
-  get values(): { coordinates: Coordinates; object: GameObject | null }[] {
-    return [...this.#map.entries()].map(([coords, object]) => ({
+  public get values(): {
+    coordinates: Coordinates
+    object: GameObject | null
+  }[] {
+    return [...this._objectsByCoords.entries()].map(([coords, object]) => ({
       coordinates: this.decodeCoordinates(coords),
       object,
     }))
   }
 
-  get emptyCoordinates(): Coordinates[] {
+  public get emptyCoordinates(): Coordinates[] {
     return this.values
       .filter(v => !v.object)
       .map(({ coordinates }) => coordinates)
   }
-  //
 
-  // Private
+  public getRandomEmptyCoordinates(): Coordinates {
+    const rnd = getRandomInt(this.emptyCoordinates.length)
+    return this.emptyCoordinates[rnd]
+  }
+
+  /*
+
+  */
+
   private decodeCoordinates(coords: string): Coordinates {
     const [x, y] = coords.split('-').map(c => (c ? +c : null))
     if (
-      !(x && x >= 0 && x <= this.#width && y && y >= 0 && y <= this.#height)
+      !(x && x >= 0 && x <= this._width && y && y >= 0 && y <= this._height)
     ) {
       throw new Error('Coordinates decoding error')
     }
@@ -62,46 +75,48 @@ export class GameMap {
 
   private encodeCoordinates({ x, y }: Coordinates): string {
     if (
-      !(x && x >= 0 && x <= this.#width && y && y >= 0 && y <= this.#height)
+      !(x && x >= 0 && x <= this._width && y && y >= 0 && y <= this._height)
     ) {
       throw new Error('Coordinates encoding error')
     }
     return `${x}-${y}`
   }
-  //
 
-  // Interface
-  addObject(object: GameObject, coordinates: Coordinates): void {
+  /*
+
+  */
+
+  public addObject(object: GameObject, coordinates: Coordinates): void {
     const coords = this.encodeCoordinates(coordinates)
-    if (this.#map.has(coords)) {
+    if (this._objectsByCoords.has(coords)) {
       throw new Error('Coordinates busy')
     }
-    if (this.#indeces.has(object.id)) {
+    if (this._coordsById.has(object.id)) {
       throw new Error('Object with ID exists')
     }
 
-    this.#map.set(coords, object)
-    this.#indeces.set(object.id, coords)
+    this._objectsByCoords.set(coords, object)
+    this._coordsById.set(object.id, coords)
   }
 
-  getObject(coordinates: Coordinates): GameObject | null
-  getObject(id: string): GameObject | null
-  getObject(args: Coordinates | string) {
+  public getObject(coordinates: Coordinates): GameObject | null
+  public getObject(id: string): GameObject | null
+  public getObject(args: Coordinates | string) {
     switch (typeof args) {
       case 'string': {
         const id = args
-        const coords = this.#indeces.get(id)
+        const coords = this._coordsById.get(id)
         if (!coords) {
           return null
         }
-        const object = this.#map.get(coords)
+        const object = this._objectsByCoords.get(coords)
         return object ?? null
       }
 
       case 'object': {
         const { x, y } = args
         const coords = this.encodeCoordinates({ x, y })
-        const object = this.#map.get(coords)
+        const object = this._objectsByCoords.get(coords)
         return object ?? null
       }
       default:
@@ -109,36 +124,44 @@ export class GameMap {
     }
   }
 
-  moveObject(id: string, coordinates: Coordinates): void {
-    const existingCoords = this.#indeces.get(id)
+  public getObjectCoordinates(id: string): Coordinates | null {
+    const coords = this._coordsById.get(id)
+    if (!coords) {
+      return null
+    }
+    return this.decodeCoordinates(coords)
+  }
+
+  public moveObject(id: string, coordinates: Coordinates): void {
+    const existingCoords = this._coordsById.get(id)
     if (!existingCoords) {
       throw new Error("Object with ID doesn't exist")
     }
 
-    const existingObject = this.#map.get(existingCoords)
+    const existingObject = this._objectsByCoords.get(existingCoords)
     if (!existingObject) {
       throw new Error("Object with coords doesn't exist")
     }
 
     const newCoords = this.encodeCoordinates(coordinates)
 
-    this.#map.set(newCoords, existingObject)
-    this.#map.set(existingCoords, null)
-    this.#indeces.set(id, newCoords)
+    this._objectsByCoords.set(newCoords, existingObject)
+    this._objectsByCoords.set(existingCoords, null)
+    this._coordsById.set(id, newCoords)
   }
 
-  deleteObject(id: string): boolean {
-    const coords = this.#indeces.get(id)
+  public deleteObject(id: string): boolean {
+    const coords = this._coordsById.get(id)
     if (!coords) {
       return false
     }
-    const existingObject = this.#map.get(coords)
+    const existingObject = this._objectsByCoords.get(coords)
     if (!existingObject) {
       return false
     }
 
-    this.#indeces.delete(id)
-    this.#map.set(coords, null)
+    this._coordsById.delete(id)
+    this._objectsByCoords.set(coords, null)
     return true
   }
 }
