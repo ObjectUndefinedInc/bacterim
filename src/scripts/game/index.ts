@@ -1,4 +1,4 @@
-import { getDirectionCoordinates, getRandomFloat } from '../utils'
+import { getDirectionCoordinates } from '../utils'
 import { Bacteria } from './bacteria'
 import { Food } from './food'
 import { GameMap } from './map'
@@ -15,11 +15,10 @@ export function startGame(params: StartGameParams) {
   const { width, height, food, bacterias } = params
 
   const gameMap = new GameMap({ width, height })
+  console.log('Seeding the map', params)
   seedMap(gameMap, food, bacterias)
 
-  console.log('Seeding map')
-
-  console.log('Map seeded: ', JSON.stringify(gameMap.values, null, 2), '\n\n\n')
+  console.log('Map seeded')
 
   setInterval(() => {
     console.log('___tick')
@@ -37,7 +36,6 @@ function loop(map: GameMap) {
 
   for (const object of objects) {
     if (!(object instanceof Bacteria)) {
-      console.log('Object ', JSON.stringify(object))
       continue
     }
 
@@ -104,21 +102,23 @@ function seedMap(map: GameMap, food: number, bacterias: number) {
   if (map.size.width * map.size.height < food + bacterias) {
     throw new Error('Cannot seed with the configuration')
   }
-  let foodFeft = food
-  let bacteriasLeft = bacterias
 
-  while (foodFeft + bacteriasLeft > 0) {
-    const rnd = getRandomFloat()
+  for (let i = food; i > 0; i--) {
+    console.log('Seeding food, left: ', i)
     const coords = map.getRandomEmptyCoordinates()
-    if (rnd < 0.5) {
-      const food = new Food({ energy: DEFAULT_ENERGY_FOOD })
-      map.addObject(food, coords)
-      foodFeft -= 1
-    } else {
-      const bacteria = new Bacteria({ energy: DEFAULT_ENERGY_BACTERIA })
-      map.addObject(bacteria, coords)
-      bacteriasLeft -= 1
-    }
+    console.log('coords', coords)
+    const food = new Food({ energy: DEFAULT_ENERGY_FOOD })
+    map.addObject(food, coords)
+    console.log('created and added food', JSON.stringify(food))
+  }
+
+  for (let i = bacterias; i > 0; i--) {
+    console.log('Seeding bacterias, left: ', i)
+    const coords = map.getRandomEmptyCoordinates()
+    console.log('coords', coords)
+    const bacteria = new Bacteria({ energy: DEFAULT_ENERGY_BACTERIA })
+    map.addObject(bacteria, coords)
+    console.log('created and added bacteria', bacteria.id)
   }
 
   return map

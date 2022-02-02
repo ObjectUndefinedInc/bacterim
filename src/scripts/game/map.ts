@@ -66,7 +66,14 @@ export class GameMap {
   private decodeCoordinates(coords: string): Coordinates {
     const [x, y] = coords.split('-').map(c => (c ? +c : null))
     if (
-      !(x && x >= 0 && x <= this._width && y && y >= 0 && y <= this._height)
+      !(
+        typeof x === 'number' &&
+        x >= 0 &&
+        x <= this._width &&
+        typeof y === 'number' &&
+        y >= 0 &&
+        y <= this._height
+      )
     ) {
       throw new Error('Coordinates decoding error')
     }
@@ -75,7 +82,14 @@ export class GameMap {
 
   private encodeCoordinates({ x, y }: Coordinates): string {
     if (
-      !(x && x >= 0 && x <= this._width && y && y >= 0 && y <= this._height)
+      !(
+        typeof x === 'number' &&
+        x >= 0 &&
+        x <= this._width &&
+        typeof y === 'number' &&
+        y >= 0 &&
+        y <= this._height
+      )
     ) {
       throw new Error('Coordinates encoding error')
     }
@@ -88,7 +102,7 @@ export class GameMap {
 
   public addObject(object: GameObject, coordinates: Coordinates): void {
     const coords = this.encodeCoordinates(coordinates)
-    if (this._objectsByCoords.has(coords)) {
+    if (this._objectsByCoords.get(coords)) {
       throw new Error('Coordinates busy')
     }
     if (this._coordsById.has(object.id)) {
@@ -128,6 +142,9 @@ export class GameMap {
 
       case 'object': {
         const { x, y } = args
+        if (!(x >= 0 && x <= this._width && y >= 0 && y <= this._height)) {
+          return null
+        }
         const coords = this.encodeCoordinates({ x, y })
         const object = this._objectsByCoords.get(coords)
         return object ?? null

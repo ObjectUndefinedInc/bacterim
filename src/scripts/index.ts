@@ -20,10 +20,10 @@ window.onload = () => {
     startButton.onclick = () => {
       console.log('Starting the game')
       startGame({
-        width: 320,
-        height: 240,
-        food: 2000,
-        bacterias: 5000,
+        width: 150,
+        height: 100,
+        food: 1000,
+        bacterias: 1000,
       })
     }
   }
