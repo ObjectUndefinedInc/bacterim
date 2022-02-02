@@ -99,6 +99,19 @@ export class GameMap {
     this._coordsById.set(object.id, coords)
   }
 
+  public getObjects() {
+    const existingObjectCoords = [...this._coordsById.values()]
+
+    const objects: GameObject[] = []
+    for (const coords of existingObjectCoords) {
+      const object = this._objectsByCoords.get(coords)
+      if (object) {
+        objects.push(object)
+      }
+    }
+    return objects
+  }
+
   public getObject(coordinates: Coordinates): GameObject | null
   public getObject(id: string): GameObject | null
   public getObject(args: Coordinates | string) {

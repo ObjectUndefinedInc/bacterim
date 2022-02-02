@@ -23,8 +23,14 @@ export class Food extends EnergyObject implements Edible {
     if (this._state === 'depleted') {
       return null
     }
-    const releasedEnergy = this._energy - appliedPower * this._resistance
+    const releasedEnergy = Math.min(
+      this._energy - appliedPower * this._resistance,
+      this._energy
+    )
     this._energy -= releasedEnergy
+    if (this._energy < 0.01) {
+      this._state = 'depleted'
+    }
     return releasedEnergy
   }
 }

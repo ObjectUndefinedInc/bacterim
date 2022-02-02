@@ -1,7 +1,7 @@
 import { getDirectionCoordinates, getRandomFloat, getRandomInt } from '../utils'
 import { Food } from './food'
 import { GameMap } from './map'
-import { GameObject, EnergyObject, ENERGY_MAX_DEFAULT } from './object'
+import { EnergyObject, ENERGY_MAX_DEFAULT } from './object'
 import { allDirections, Coordinates, Direction, Edible } from './types'
 
 type BacteriaState = 'roaming' | 'fight' | 'flight' | 'dead'
@@ -11,7 +11,7 @@ export class Bacteria extends EnergyObject {
   private _strength: number = 50
 
   private _state: BacteriaState = 'roaming'
-  private _previousDirection: Direction | undefined
+  // private _previousDirection: Direction | undefined
 
   // private _map: GameMap
   // constructor({ energy, map }: { energy: number; map: GameMap }) {
@@ -19,7 +19,11 @@ export class Bacteria extends EnergyObject {
   //   this._map = map
   // }
 
-  public makeAction({ map }: { map: GameMap }): Action {
+  get state() {
+    return this._state
+  }
+
+  public makeIntention({ map }: { map: GameMap }): Intention {
     const isHungry =
       this._energy < ENERGY_MAX_DEFAULT + this._strength * this._agressiveFactor
 
@@ -49,7 +53,11 @@ export class Bacteria extends EnergyObject {
     }
   }
 
+  // Actions
   public eat(food: Edible) {
+    if (this._state === 'dead') {
+      throw new Error('Dead cannot eat')
+    }
     const energy = food.releaseEnergy(this._strength * this._agressiveFactor)
     if (energy) {
       this._energy += energy
@@ -59,14 +67,21 @@ export class Bacteria extends EnergyObject {
     }
   }
 
-  public move(_map: GameMap) {
-    this._energy -= 1
+  public move(steps: number) {
+    if (this._state === 'dead') {
+      throw new Error('Dead cannot move')
+    }
+
+    this._energy -= steps
     if (this.energy < 0) {
       this._state = 'dead'
     }
   }
 
-  private roam({ map }: { map: GameMap }): Action {
+  // Helpers
+
+  private roam({ map }: { map: GameMap }): Intention {
+    // Move and find food if hungry
     const randomMove = this.makeRandomMove({ map })
     if (randomMove) {
       return {
@@ -108,7 +123,6 @@ export class Bacteria extends EnergyObject {
   }
 
   private makeRandomMove({ map }: { map: GameMap }) {
-    const ownCoords = this.getOwnCoordinates({ map })
     const availableDirections = this.getAvailableDirections({ map })
     if (!availableDirections.length) {
       return null
@@ -126,7 +140,7 @@ export class Bacteria extends EnergyObject {
   }
 }
 
-type Action =
+type Intention =
   | {
       type: 'noop'
     }

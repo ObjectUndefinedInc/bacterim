@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { Coordinates, Direction, directionVectors, Vector } from '../game/types'
+import { Coordinates, Direction, directionVectors } from '../game/types'
 
 export const getId = () => nanoid()
 
