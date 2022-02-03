@@ -21,7 +21,7 @@ window.onload = () => {
       console.log('Starting the game')
       startGame({
         width: 150,
-        height: 100,
+        height: 150,
         food: 1000,
         bacterias: 1000,
       })

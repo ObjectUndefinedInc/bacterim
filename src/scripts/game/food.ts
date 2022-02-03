@@ -24,7 +24,7 @@ export class Food extends EnergyObject implements Edible {
       return null
     }
     const releasedEnergy = Math.min(
-      this._energy - appliedPower * this._resistance,
+      appliedPower * this._resistance,
       this._energy
     )
     this._energy -= releasedEnergy

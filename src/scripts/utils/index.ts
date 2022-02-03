@@ -1,3 +1,11 @@
+declare global {
+  interface Window {
+    cls: {
+      show: (id: string) => any
+    }
+  }
+}
+
 import { nanoid } from 'nanoid'
 import { Coordinates, Direction, directionVectors } from '../game/types'
 
