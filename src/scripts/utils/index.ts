@@ -1,7 +1,10 @@
 declare global {
   interface Window {
     cls: {
-      show: (id: string) => any
+      // show: (id: string) => any
+      // getObjects: () => any
+      start: () => void
+      draw: () => void
     }
   }
 }
