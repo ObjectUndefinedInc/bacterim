@@ -15,13 +15,13 @@ let game: Game | undefined = undefined
 
 export function startGame(params: StartGameParams) {
   game = new Game(params)
-  game.start()
-
   startRendering()
+
+  game.start()
 
   setInterval(() => {
     game?.tick()
-  }, 100)
+  }, 0)
 }
 
 // Render loop
@@ -30,20 +30,22 @@ let lastRenderedTick: number | undefined
 
 const startRendering = () => {
   if (lastRenderedTick !== game?.ticks) {
-    render(game!.map)
+    render(game?.map)
     lastRenderedTick = game?.ticks
+  } else {
+    console.debug('Missed frame')
   }
   window.requestAnimationFrame(startRendering)
 }
 
-export function render(map: GameMap) {
+export function render(map?: GameMap) {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement
   const ctx = canvas.getContext('2d')!
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   let fillStyle = 'red'
 
-  for (const { coordinates, object } of map.values) {
+  for (const { coordinates, object } of map?.values ?? []) {
     if (object) {
       if (object instanceof Food) {
         if (object.state === 'depleted') {

@@ -63,7 +63,7 @@ export class Game {
       console.log('coords', coords)
       const food = new Food({ energy: DEFAULT_ENERGY_FOOD })
       map.addObject(food, coords)
-      console.log('created and added food', JSON.stringify(food))
+      console.trace('created and added food', JSON.stringify(food))
     }
 
     for (let i = bacterias; i > 0; i--) {
@@ -72,7 +72,7 @@ export class Game {
       console.log('coords', coords)
       const bacteria = new Bacteria({ energy: DEFAULT_ENERGY_BACTERIA })
       map.addObject(bacteria, coords)
-      console.log('created and added bacteria', bacteria.id)
+      console.trace('created and added bacteria', bacteria.id)
     }
 
     return map
