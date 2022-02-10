@@ -83,8 +83,8 @@ export class Game {
     const objects = map.getObjects()
 
     for (const object of objects) {
-      if (object instanceof Food && getRandomFloat() > 0.75) {
-        object.storeEnergy(getRandomInt(60) * getRandomFloat())
+      if (object instanceof Food && getRandomFloat() > 0.95) {
+        object.storeEnergy(getRandomInt(10) * getRandomFloat())
       }
 
       if (!(object instanceof Bacteria)) {
