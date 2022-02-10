@@ -12,8 +12,6 @@ const gameConfig = {
 console.log('JS load OK')
 testModuleImport()
 
-let game: Game = undefined!
-
 let size = 150
 let positonX = 100
 
@@ -41,14 +39,9 @@ const draw = (_time?: number) => {
   ctx.arc((positonX += 1), 300, (size += 0.1), 0, Math.PI * 1.3)
   ctx.closePath()
   ctx.stroke()
-  // ctx.fill()
 
   window.requestAnimationFrame(draw)
 }
-
-// function animate(time: number) {
-//   window.requestAnimationFrame(animate)
-// }
 
 window.onload = () => {
   console.log('Window loaded')
@@ -60,13 +53,6 @@ window.onload = () => {
       testModuleImport()
     }
   }
-
-  // const startButton = document.getElementById('start_game')
-  // if (startButton) {
-  //   startButton.onclick = () => {
-  //     // console.log('Starting the game')
-  //     // startGame(gameConfig)
-  //   }
 
   window.cls = {
     start: () => {
