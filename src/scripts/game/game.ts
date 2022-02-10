@@ -30,7 +30,10 @@ export class Game {
       height: this._config.height,
     }
 
-    console.log('Starting a game', { config: this._config })
+    console.log(
+      'Starting a game',
+      JSON.stringify({ config: this._config }, null, 2)
+    )
     this._map = new GameMap(size)
 
     console.log('Seeding the map')
@@ -58,21 +61,19 @@ export class Game {
     }
 
     for (let i = food; i > 0; i--) {
-      console.log('Seeding food, left: ', i)
+      console.debug('Seeding food, left: ', i)
       const coords = map.getRandomEmptyCoordinates()
-      console.log('coords', coords)
       const food = new Food({ energy: DEFAULT_ENERGY_FOOD })
       map.addObject(food, coords)
-      console.trace('created and added food', JSON.stringify(food))
+      console.debug('created and added food', JSON.stringify(food))
     }
 
     for (let i = bacterias; i > 0; i--) {
-      console.log('Seeding bacterias, left: ', i)
+      console.debug('Seeding bacterias, left: ', i)
       const coords = map.getRandomEmptyCoordinates()
-      console.log('coords', coords)
       const bacteria = new Bacteria({ energy: DEFAULT_ENERGY_BACTERIA })
       map.addObject(bacteria, coords)
-      console.trace('created and added bacteria', bacteria.id)
+      console.debug('created and added bacteria', bacteria.id)
     }
 
     return map

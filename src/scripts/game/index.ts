@@ -1,4 +1,3 @@
-import { getDirectionCoordinates, getRandomFloat, getRandomInt } from '../utils'
 import { Bacteria } from './bacteria'
 import { Food } from './food'
 import { Game } from './game'
