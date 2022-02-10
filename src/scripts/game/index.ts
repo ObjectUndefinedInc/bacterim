@@ -17,16 +17,24 @@ export function startGame(params: StartGameParams) {
   game = new Game(params)
   game.start()
 
-  render(game.map)
-  setInterval(() => {
-    // console.debug('___tick')
-    game && render(game.map)
+  startRendering()
 
+  setInterval(() => {
     game?.tick()
   }, 100)
 }
 
-// Game loop
+// Render loop
+
+let lastRenderedTick: number | undefined
+
+const startRendering = () => {
+  if (lastRenderedTick !== game?.ticks) {
+    render(game!.map)
+    lastRenderedTick = game?.ticks
+  }
+  window.requestAnimationFrame(startRendering)
+}
 
 export function render(map: GameMap) {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement

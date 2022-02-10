@@ -14,6 +14,7 @@ export class Game {
   private _config: GameConfig
   private _state: string = 'init'
   private _map?: GameMap
+  private _ticks: number = 0
 
   public get map() {
     return this._map!
@@ -39,8 +40,13 @@ export class Game {
     console.log('State ', this._state)
   }
 
+  public get ticks() {
+    return this._ticks
+  }
+
   public tick() {
     this.loop(this.map)
+    this._ticks++
   }
 
   private seedMap(map: GameMap, food: number, bacterias: number) {
