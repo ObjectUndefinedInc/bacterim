@@ -23,6 +23,16 @@ export function startGame(params: StartGameParams) {
   }, 0)
 }
 
+// const averageBacteriaStats = (map: GameMap) =>
+//   map
+//     .getObjects()
+//     .filter(o => o instanceof Bacteria)
+//     .reduce(acc => {
+//       return acc
+//     }, {
+
+//     })
+
 // Render loop
 
 let lastRenderedTick: number | undefined
